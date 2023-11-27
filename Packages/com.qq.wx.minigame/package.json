@@ -1,0 +1,15 @@
+{
+  "name": "ccom.qq.wx.minigame",
+  "displayName": "WXSDK",
+  "description": "Project.",
+  "version": "0.1.0",
+  "unity": "2019.4",
+  "unityRelease": "29f1",
+  "keywords": [
+    "Unity",
+    "WX",
+  ],
+  "dependencies": {
+    "nuget.mono-cecil": "0.1.6-preview"
+  }
+}
