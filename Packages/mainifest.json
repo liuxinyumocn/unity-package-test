@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "com.unity.instantgame": "https://github.com/liuxinyumocn/unity-package-test#1.0.0"
+  }
+}
