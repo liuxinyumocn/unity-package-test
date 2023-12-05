@@ -26,12 +26,14 @@ let OnKeyboardConfirmList;
 let OnKeyboardHeightChangeList;
 let OnKeyboardInputList;
 let OnMemoryWarningList;
+let OnMouseDownList;
+let OnMouseMoveList;
+let OnMouseUpList;
 let OnNetworkStatusChangeList;
 let OnNetworkWeakChangeList;
 let OnShowList;
 let OnTouchCancelList;
 let OnTouchEndList;
-let OnTouchMoveList;
 let OnTouchStartList;
 let OnUnhandledRejectionList;
 let OnUserCaptureScreenList;
@@ -46,13 +48,17 @@ let wxOnCopyUrlResolveConf;
 let wxOnHandoffResolveConf;
 let wxOnShareTimelineResolveConf;
 let wxOnGameLiveStateChangeResolveConf;
+const DownloadTaskList = {};
 const FeedbackButtonList = {};
 const LogManagerList = {};
 const RealtimeLogManagerList = {};
 const UpdateManagerList = {};
 const VideoDecoderList = {};
+const wxDownloadTaskHeadersReceivedList = {};
+const wxDownloadTaskProgressUpdateList = {};
 const wxFeedbackButtonTapList = {};
 const wxVideoDecoderList = {};
+const getDownloadTaskObject = getListObject(DownloadTaskList, 'DownloadTask');
 const getFeedbackButtonObject = getListObject(FeedbackButtonList, 'FeedbackButton');
 const getLogManagerObject = getListObject(LogManagerList, 'LogManager');
 const getRealtimeLogManagerObject = getListObject(RealtimeLogManagerList, 'RealtimeLogManager');
@@ -299,25 +305,25 @@ export default {
             },
         });
     },
-    WX_CloseSocket(conf, callbackId) {
+    WX_CompressImage(conf, callbackId) {
         const config = formatJsonStr(conf);
-        wx.closeSocket({
+        wx.compressImage({
             ...config,
             success(res) {
-                formatResponse('GeneralCallbackResult', res);
-                moduleHelper.send('CloseSocketCallback', JSON.stringify({
+                formatResponse('CompressImageSuccessCallbackResult', res);
+                moduleHelper.send('CompressImageCallback', JSON.stringify({
                     callbackId, type: 'success', res: JSON.stringify(res),
                 }));
             },
             fail(res) {
                 formatResponse('GeneralCallbackResult', res);
-                moduleHelper.send('CloseSocketCallback', JSON.stringify({
+                moduleHelper.send('CompressImageCallback', JSON.stringify({
                     callbackId, type: 'fail', res: JSON.stringify(res),
                 }));
             },
             complete(res) {
                 formatResponse('GeneralCallbackResult', res);
-                moduleHelper.send('CloseSocketCallback', JSON.stringify({
+                moduleHelper.send('CompressImageCallback', JSON.stringify({
                     callbackId, type: 'complete', res: JSON.stringify(res),
                 }));
             },
@@ -558,6 +564,54 @@ export default {
             complete(res) {
                 formatResponse('BluetoothError', res);
                 moduleHelper.send('GetBLEMTUCallback', JSON.stringify({
+                    callbackId, type: 'complete', res: JSON.stringify(res),
+                }));
+            },
+        });
+    },
+    WX_GetBackgroundFetchData(conf, callbackId) {
+        const config = formatJsonStr(conf);
+        wx.getBackgroundFetchData({
+            ...config,
+            success(res) {
+                formatResponse('GetBackgroundFetchDataSuccessCallbackResult', res);
+                moduleHelper.send('GetBackgroundFetchDataCallback', JSON.stringify({
+                    callbackId, type: 'success', res: JSON.stringify(res),
+                }));
+            },
+            fail(res) {
+                formatResponse('GeneralCallbackResult', res);
+                moduleHelper.send('GetBackgroundFetchDataCallback', JSON.stringify({
+                    callbackId, type: 'fail', res: JSON.stringify(res),
+                }));
+            },
+            complete(res) {
+                formatResponse('GeneralCallbackResult', res);
+                moduleHelper.send('GetBackgroundFetchDataCallback', JSON.stringify({
+                    callbackId, type: 'complete', res: JSON.stringify(res),
+                }));
+            },
+        });
+    },
+    WX_GetBackgroundFetchToken(conf, callbackId) {
+        const config = formatJsonStr(conf);
+        wx.getBackgroundFetchToken({
+            ...config,
+            success(res) {
+                formatResponse('GetBackgroundFetchTokenSuccessCallbackResult', res);
+                moduleHelper.send('GetBackgroundFetchTokenCallback', JSON.stringify({
+                    callbackId, type: 'success', res: JSON.stringify(res),
+                }));
+            },
+            fail(res) {
+                formatResponse('GeneralCallbackResult', res);
+                moduleHelper.send('GetBackgroundFetchTokenCallback', JSON.stringify({
+                    callbackId, type: 'fail', res: JSON.stringify(res),
+                }));
+            },
+            complete(res) {
+                formatResponse('GeneralCallbackResult', res);
+                moduleHelper.send('GetBackgroundFetchTokenCallback', JSON.stringify({
                     callbackId, type: 'complete', res: JSON.stringify(res),
                 }));
             },
@@ -899,30 +953,6 @@ export default {
             },
         });
     },
-    WX_GetLocation(conf, callbackId) {
-        const config = formatJsonStr(conf);
-        wx.getLocation({
-            ...config,
-            success(res) {
-                formatResponse('GetLocationSuccessCallbackResult', res);
-                moduleHelper.send('GetLocationCallback', JSON.stringify({
-                    callbackId, type: 'success', res: JSON.stringify(res),
-                }));
-            },
-            fail(res) {
-                formatResponse('GeneralCallbackResult', res);
-                moduleHelper.send('GetLocationCallback', JSON.stringify({
-                    callbackId, type: 'fail', res: JSON.stringify(res),
-                }));
-            },
-            complete(res) {
-                formatResponse('GeneralCallbackResult', res);
-                moduleHelper.send('GetLocationCallback', JSON.stringify({
-                    callbackId, type: 'complete', res: JSON.stringify(res),
-                }));
-            },
-        });
-    },
     WX_GetNetworkType(conf, callbackId) {
         const config = formatJsonStr(conf);
         wx.getNetworkType({
@@ -942,6 +972,30 @@ export default {
             complete(res) {
                 formatResponse('GeneralCallbackResult', res);
                 moduleHelper.send('GetNetworkTypeCallback', JSON.stringify({
+                    callbackId, type: 'complete', res: JSON.stringify(res),
+                }));
+            },
+        });
+    },
+    WX_GetPrivacySetting(conf, callbackId) {
+        const config = formatJsonStr(conf);
+        wx.getPrivacySetting({
+            ...config,
+            success(res) {
+                formatResponse('GetPrivacySettingSuccessCallbackResult', res);
+                moduleHelper.send('GetPrivacySettingCallback', JSON.stringify({
+                    callbackId, type: 'success', res: JSON.stringify(res),
+                }));
+            },
+            fail(res) {
+                formatResponse('GeneralCallbackResult', res);
+                moduleHelper.send('GetPrivacySettingCallback', JSON.stringify({
+                    callbackId, type: 'fail', res: JSON.stringify(res),
+                }));
+            },
+            complete(res) {
+                formatResponse('GeneralCallbackResult', res);
+                moduleHelper.send('GetPrivacySettingCallback', JSON.stringify({
                     callbackId, type: 'complete', res: JSON.stringify(res),
                 }));
             },
@@ -1345,7 +1399,7 @@ export default {
                 }));
             },
             fail(res) {
-                formatResponse('GeneralCallbackResult', res);
+                formatResponse('RequestFailCallbackErr', res);
                 moduleHelper.send('LoginCallback', JSON.stringify({
                     callbackId, type: 'fail', res: JSON.stringify(res),
                 }));
@@ -1646,6 +1700,30 @@ export default {
             },
         });
     },
+    WX_OpenPrivacyContract(conf, callbackId) {
+        const config = formatJsonStr(conf);
+        wx.openPrivacyContract({
+            ...config,
+            success(res) {
+                formatResponse('GeneralCallbackResult', res);
+                moduleHelper.send('OpenPrivacyContractCallback', JSON.stringify({
+                    callbackId, type: 'success', res: JSON.stringify(res),
+                }));
+            },
+            fail(res) {
+                formatResponse('GeneralCallbackResult', res);
+                moduleHelper.send('OpenPrivacyContractCallback', JSON.stringify({
+                    callbackId, type: 'fail', res: JSON.stringify(res),
+                }));
+            },
+            complete(res) {
+                formatResponse('GeneralCallbackResult', res);
+                moduleHelper.send('OpenPrivacyContractCallback', JSON.stringify({
+                    callbackId, type: 'complete', res: JSON.stringify(res),
+                }));
+            },
+        });
+    },
     WX_OpenSetting(conf, callbackId) {
         const config = formatJsonStr(conf);
         wx.openSetting({
@@ -1870,13 +1948,13 @@ export default {
         wx.requestMidasPayment({
             ...config,
             success(res) {
-                formatResponse('GeneralCallbackResult', res);
+                formatResponse('RequestMidasPaymentSuccessCallbackResult', res);
                 moduleHelper.send('RequestMidasPaymentCallback', JSON.stringify({
                     callbackId, type: 'success', res: JSON.stringify(res),
                 }));
             },
             fail(res) {
-                formatResponse('MidasPaymentError', res);
+                formatResponse('RequestMidasPaymentFailCallbackErr', res);
                 moduleHelper.send('RequestMidasPaymentCallback', JSON.stringify({
                     callbackId, type: 'fail', res: JSON.stringify(res),
                 }));
@@ -1932,6 +2010,30 @@ export default {
             complete(res) {
                 formatResponse('GeneralCallbackResult', res);
                 moduleHelper.send('RequestSubscribeSystemMessageCallback', JSON.stringify({
+                    callbackId, type: 'complete', res: JSON.stringify(res),
+                }));
+            },
+        });
+    },
+    WX_RequirePrivacyAuthorize(conf, callbackId) {
+        const config = formatJsonStr(conf);
+        wx.requirePrivacyAuthorize({
+            ...config,
+            success(res) {
+                formatResponse('GeneralCallbackResult', res);
+                moduleHelper.send('RequirePrivacyAuthorizeCallback', JSON.stringify({
+                    callbackId, type: 'success', res: JSON.stringify(res),
+                }));
+            },
+            fail(res) {
+                formatResponse('GeneralCallbackResult', res);
+                moduleHelper.send('RequirePrivacyAuthorizeCallback', JSON.stringify({
+                    callbackId, type: 'fail', res: JSON.stringify(res),
+                }));
+            },
+            complete(res) {
+                formatResponse('GeneralCallbackResult', res);
+                moduleHelper.send('RequirePrivacyAuthorizeCallback', JSON.stringify({
                     callbackId, type: 'complete', res: JSON.stringify(res),
                 }));
             },
@@ -2033,30 +2135,6 @@ export default {
             },
         });
     },
-    WX_SendSocketMessage(conf, callbackId) {
-        const config = formatJsonStr(conf);
-        wx.sendSocketMessage({
-            ...config,
-            success(res) {
-                formatResponse('GeneralCallbackResult', res);
-                moduleHelper.send('SendSocketMessageCallback', JSON.stringify({
-                    callbackId, type: 'success', res: JSON.stringify(res),
-                }));
-            },
-            fail(res) {
-                formatResponse('GeneralCallbackResult', res);
-                moduleHelper.send('SendSocketMessageCallback', JSON.stringify({
-                    callbackId, type: 'fail', res: JSON.stringify(res),
-                }));
-            },
-            complete(res) {
-                formatResponse('GeneralCallbackResult', res);
-                moduleHelper.send('SendSocketMessageCallback', JSON.stringify({
-                    callbackId, type: 'complete', res: JSON.stringify(res),
-                }));
-            },
-        });
-    },
     WX_SetBLEMTU(conf, callbackId) {
         const config = formatJsonStr(conf);
         wx.setBLEMTU({
@@ -2076,6 +2154,30 @@ export default {
             complete(res) {
                 formatResponse('GeneralCallbackResult', res);
                 moduleHelper.send('SetBLEMTUCallback', JSON.stringify({
+                    callbackId, type: 'complete', res: JSON.stringify(res),
+                }));
+            },
+        });
+    },
+    WX_SetBackgroundFetchToken(conf, callbackId) {
+        const config = formatJsonStr(conf);
+        wx.setBackgroundFetchToken({
+            ...config,
+            success(res) {
+                formatResponse('GeneralCallbackResult', res);
+                moduleHelper.send('SetBackgroundFetchTokenCallback', JSON.stringify({
+                    callbackId, type: 'success', res: JSON.stringify(res),
+                }));
+            },
+            fail(res) {
+                formatResponse('GeneralCallbackResult', res);
+                moduleHelper.send('SetBackgroundFetchTokenCallback', JSON.stringify({
+                    callbackId, type: 'fail', res: JSON.stringify(res),
+                }));
+            },
+            complete(res) {
+                formatResponse('GeneralCallbackResult', res);
+                moduleHelper.send('SetBackgroundFetchTokenCallback', JSON.stringify({
                     callbackId, type: 'complete', res: JSON.stringify(res),
                 }));
             },
@@ -3137,6 +3239,30 @@ export default {
             },
         });
     },
+    WX_RequestSubscribeLiveActivity(conf, callbackId) {
+        const config = formatJsonStr(conf);
+        wx.requestSubscribeLiveActivity({
+            ...config,
+            success(res) {
+                formatResponse('RequestSubscribeLiveActivitySuccessCallbackResult', res);
+                moduleHelper.send('RequestSubscribeLiveActivityCallback', JSON.stringify({
+                    callbackId, type: 'success', res: JSON.stringify(res),
+                }));
+            },
+            fail(res) {
+                formatResponse('GeneralCallbackResult', res);
+                moduleHelper.send('RequestSubscribeLiveActivityCallback', JSON.stringify({
+                    callbackId, type: 'fail', res: JSON.stringify(res),
+                }));
+            },
+            complete(res) {
+                formatResponse('GeneralCallbackResult', res);
+                moduleHelper.send('RequestSubscribeLiveActivityCallback', JSON.stringify({
+                    callbackId, type: 'complete', res: JSON.stringify(res),
+                }));
+            },
+        });
+    },
     WX_OperateGameRecorderVideo(option) {
         wx.operateGameRecorderVideo(formatJsonStr(option));
     },
@@ -3291,6 +3417,14 @@ export default {
         (OnBLEPeripheralConnectionStateChangedList || []).forEach((v) => {
             wx.offBLEPeripheralConnectionStateChanged(v);
         });
+    },
+    WX_OnBackgroundFetchData() {
+        const callback = (res) => {
+            formatResponse('OnBackgroundFetchDataListenerResult', res);
+            const resStr = JSON.stringify(res);
+            moduleHelper.send('_OnBackgroundFetchDataCallback', resStr);
+        };
+        wx.onBackgroundFetchData(callback);
     },
     WX_OnBeaconServiceChange() {
         if (!OnBeaconServiceChangeList) {
@@ -3604,6 +3738,57 @@ export default {
         };
         wx.onMessage(callback);
     },
+    WX_OnMouseDown() {
+        if (!OnMouseDownList) {
+            OnMouseDownList = [];
+        }
+        const callback = (res) => {
+            formatResponse('OnMouseDownListenerResult', res);
+            const resStr = JSON.stringify(res);
+            moduleHelper.send('_OnMouseDownCallback', resStr);
+        };
+        OnMouseDownList.push(callback);
+        wx.onMouseDown(callback);
+    },
+    WX_OffMouseDown() {
+        (OnMouseDownList || []).forEach((v) => {
+            wx.offMouseDown(v);
+        });
+    },
+    WX_OnMouseMove() {
+        if (!OnMouseMoveList) {
+            OnMouseMoveList = [];
+        }
+        const callback = (res) => {
+            formatResponse('OnMouseMoveListenerResult', res);
+            const resStr = JSON.stringify(res);
+            moduleHelper.send('_OnMouseMoveCallback', resStr);
+        };
+        OnMouseMoveList.push(callback);
+        wx.onMouseMove(callback);
+    },
+    WX_OffMouseMove() {
+        (OnMouseMoveList || []).forEach((v) => {
+            wx.offMouseMove(v);
+        });
+    },
+    WX_OnMouseUp() {
+        if (!OnMouseUpList) {
+            OnMouseUpList = [];
+        }
+        const callback = (res) => {
+            formatResponse('OnMouseDownListenerResult', res);
+            const resStr = JSON.stringify(res);
+            moduleHelper.send('_OnMouseUpCallback', resStr);
+        };
+        OnMouseUpList.push(callback);
+        wx.onMouseUp(callback);
+    },
+    WX_OffMouseUp() {
+        (OnMouseUpList || []).forEach((v) => {
+            wx.offMouseUp(v);
+        });
+    },
     WX_OnNetworkStatusChange() {
         if (!OnNetworkStatusChangeList) {
             OnNetworkStatusChangeList = [];
@@ -3663,38 +3848,6 @@ export default {
             wx.offShow(v);
         });
     },
-    WX_OnSocketClose() {
-        const callback = (res) => {
-            formatResponse('SocketTaskOnCloseListenerResult', res);
-            const resStr = JSON.stringify(res);
-            moduleHelper.send('_OnSocketCloseCallback', resStr);
-        };
-        wx.onSocketClose(callback);
-    },
-    WX_OnSocketError() {
-        const callback = (res) => {
-            formatResponse('GeneralCallbackResult', res);
-            const resStr = JSON.stringify(res);
-            moduleHelper.send('_OnSocketErrorCallback', resStr);
-        };
-        wx.onSocketError(callback);
-    },
-    WX_OnSocketMessage() {
-        const callback = (res) => {
-            formatResponse('SocketTaskOnMessageListenerResult', res);
-            const resStr = JSON.stringify(res);
-            moduleHelper.send('_OnSocketMessageCallback', resStr);
-        };
-        wx.onSocketMessage(callback);
-    },
-    WX_OnSocketOpen() {
-        const callback = (res) => {
-            formatResponse('OnSocketOpenListenerResult', res);
-            const resStr = JSON.stringify(res);
-            moduleHelper.send('_OnSocketOpenCallback', resStr);
-        };
-        wx.onSocketOpen(callback);
-    },
     WX_OnTouchCancel() {
         if (!OnTouchCancelList) {
             OnTouchCancelList = [];
@@ -3735,27 +3888,6 @@ export default {
     WX_OffTouchEnd() {
         (OnTouchEndList || []).forEach((v) => {
             wx.offTouchEnd(v);
-        });
-    },
-    WX_OnTouchMove() {
-        if (!OnTouchMoveList) {
-            OnTouchMoveList = [];
-        }
-        const callback = (res) => {
-            const touches = res.touches.map((v) => formatTouchEvent(v));
-            const resStr = JSON.stringify({
-                touches,
-                timeStamp: parseInt(res.timeStamp, 10),
-                changedTouches: res.changedTouches.map((v) => formatTouchEvent(v)),
-            });
-            moduleHelper.send('_OnTouchMoveCallback', resStr);
-        };
-        OnTouchMoveList.push(callback);
-        wx.onTouchMove(callback);
-    },
-    WX_OffTouchMove() {
-        (OnTouchMoveList || []).forEach((v) => {
-            wx.offTouchMove(v);
         });
     },
     WX_OnTouchStart() {
@@ -4121,6 +4253,33 @@ export default {
         formatResponse('GameLiveState', res);
         return JSON.stringify(res);
     },
+    WX_DownloadFile(conf) {
+        const config = formatJsonStr(conf);
+        const callbackId = uid();
+        const obj = wx.downloadFile({
+            ...config,
+            success(res) {
+                formatResponse('DownloadFileSuccessCallbackResult', res);
+                moduleHelper.send('DownloadFileCallback', JSON.stringify({
+                    callbackId, type: 'success', res: JSON.stringify(res),
+                }));
+            },
+            fail(res) {
+                formatResponse('GeneralCallbackResult', res);
+                moduleHelper.send('DownloadFileCallback', JSON.stringify({
+                    callbackId, type: 'fail', res: JSON.stringify(res),
+                }));
+            },
+            complete(res) {
+                formatResponse('GeneralCallbackResult', res);
+                moduleHelper.send('DownloadFileCallback', JSON.stringify({
+                    callbackId, type: 'complete', res: JSON.stringify(res),
+                }));
+            },
+        });
+        DownloadTaskList[callbackId] = obj;
+        return callbackId;
+    },
     WX_CreateFeedbackButton(option) {
         const obj = wx.createFeedbackButton(formatJsonStr(option));
         const key = uid();
@@ -4151,12 +4310,64 @@ export default {
         VideoDecoderList[key] = obj;
         return key;
     },
+    WX_DownloadTaskAbort(id) {
+        const obj = getDownloadTaskObject(id);
+        if (!obj) {
+            return;
+        }
+        obj.abort();
+    },
+    WX_DownloadTaskOffHeadersReceived(id) {
+        const obj = getDownloadTaskObject(id);
+        if (!obj) {
+            return;
+        }
+        offEventCallback(wxDownloadTaskHeadersReceivedList, (v) => {
+            obj.offHeadersReceived(v);
+        }, id);
+    },
+    WX_DownloadTaskOffProgressUpdate(id) {
+        const obj = getDownloadTaskObject(id);
+        if (!obj) {
+            return;
+        }
+        offEventCallback(wxDownloadTaskProgressUpdateList, (v) => {
+            obj.offProgressUpdate(v);
+        }, id);
+    },
+    WX_DownloadTaskOnHeadersReceived(id) {
+        const obj = getDownloadTaskObject(id);
+        if (!obj) {
+            return;
+        }
+        const callback = onEventCallback(wxDownloadTaskHeadersReceivedList, '_DownloadTaskOnHeadersReceivedCallback', id, id);
+        obj.onHeadersReceived(callback);
+    },
+    WX_DownloadTaskOnProgressUpdate(id) {
+        const obj = getDownloadTaskObject(id);
+        if (!obj) {
+            return;
+        }
+        const callback = onEventCallback(wxDownloadTaskProgressUpdateList, '_DownloadTaskOnProgressUpdateCallback', id, id);
+        obj.onProgressUpdate(callback);
+    },
     WXFeedbackButtonSetProperty(id, key, value) {
         const obj = getFeedbackButtonObject(id);
         if (!obj) {
             return;
         }
-        obj[key] = value;
+        if (/^\s*(\{.*\}|\[.*\])\s*$/.test(value)) {
+            try {
+                const jsonValue = JSON.parse(value);
+                Object.assign(obj[key], jsonValue);
+            }
+            catch (e) {
+                obj[key] = value;
+            }
+        }
+        else {
+            obj[key] = value;
+        }
     },
     WX_FeedbackButtonDestroy(id) {
         const obj = getFeedbackButtonObject(id);

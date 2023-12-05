@@ -6,6 +6,115 @@ Removed - 删除功能/接口
 Fixed - 修复问题
 Others - 其他 
 -->
+
+## 2023-11-29
+### Fixed
+* 修复TouchMove优化在2020之前版本产生的导出错误
+
+## 2023-11-28
+### Feature
+* FileSystem Stat支持isDirectory和isFile
+* 优化胶水层代码，删减多余代码
+* TouchMove触摸性能优化
+* 优化微信字体所占用的MonoHeap临时内存
+### Fixed
+* 修复IOS音频被打断无法重新播放
+* 修复2022导出Video的BUG
+
+## 2023-11-10
+### Feature
+* 支持2022 Input Field组件适配微信输入法
+* PC端和开发者工具支持Unity VideoPlayer组件
+
+## 2023-11-02
+### Fixed
+* 修复部分首资源包压缩异常问题
+
+## 2023-10-20
+### Feature
+* Unity2022 development build的导出支持
+* 更新小游戏云测试profile获取的性能数据
+### Fixed
+* 修复微信压缩纹理工具对音频ab包的处理bug问题
+* 修复微信压缩纹理工具在 MacOS M1系列芯片执行异常问题
+
+## 2023-10-11
+### Feature
+* 适配Video Player, 安卓3.0.0基础库/IOS 3.1.1基础库且只支持播放一个视频
+
+## 2023-9-26
+### Feature
+* 适配Application.targetFramerate，无需再调用小游戏的帧率设置API
+### Fixed
+* 修复wasm分包patch未生效的问题
+* 修复WXAssetBundle在异常时上报错误
+* 更新适配插件版本到1.2.31
+
+## 2023-09-20
+### Feature
+* API协议更新至3.0.1版本，增加模糊地理位置获取接口
+* 更新适配插件版本到1.2.29
+
+## 2023-09-01
+### Feature
+* 微信压缩纹理工具Unity全版本支持
+### Fixed 
+* 修复WXAssetBundle WXUnload后再次Load同个AssetBundle可能出现的异常
+* 优化WXAssetBundle当UnityWebRequest异常时DownloadHandlerWXAssetBundle.assetBundle返回null，不再直接崩溃
+* 更新适配插件版本到1.2.26
+
+## 2023-08-24
+### Feature
+* 适配AudioClip.GetData
+* 更新适配插件版本到1.2.25
+### Fixed 
+* 修复旧版本安卓使用系统字体报错'SC Font not found in TTC File'
+* 资源优化工具支持ASTC6*6格式
+
+## 2023-08-18
+### Feature
+* 增加downloadfile（优化构建，支持创建类时传入success等会回调）
+* 重构fs.readFile和fs.readFileSync，支持position和length参数
+* 增加onMouseDown等PC点击事件
+* 支持通过 `minigame/unity-namespace.js` 中函数 `isReportableHttpError` 忽略非重要网络异常上报，如心跳、数据分析接口
+### Fixed 
+* 修复使用 `WXAssetBundle` 且请求了不同版本的资源时报错'readFileSync:fail no such file or directory'
+* pc下载资源出现'still downloading xxx'弹框时用户可尝试重启小游戏
+* 修复最佳实践检测工具首资源包是否压缩判断
+
+## 2023-08-10
+### Feature
+* 增加隐私信息授权API（requirePrivacyAuthorize等）
+* 增加API-requestSubscribeLiveActivity
+* WXAssetBundle兼容WebGL浏览器环境(回退至UnityWebRequestAssetBundle模式运行)
+ 
+## 2023-08-3
+### Feature
+更新内容：
+* 首资源包压缩后在pc上运行的基础库版本限制调整，CDN加载(>=2.32.3)，小游戏分包加载(2.29.2)
+* 完善FileSystemManager
+* Video支持修改属性
+* development模式下，增加渲染性能检测日志
+* 启动卡住时补充上报dependency
+* 更新适配插件为1.2.23
+### Fixed 
+* 修复微信系统字体加载时报错'SC Font not found in TTC File'
+* 忽略unity分析的网络失败上报
+* 修正网络个数和HTTP2.0检测
+* 修复wx.onCompassChange
+
+## 2023-07-27
+### Feature
+* 转换插件添加启动并行下载配置
+* 详细缓存日志不写入日志管理器
+* pc增加是否支持brotli压缩条件判断
+### Fixed
+* 修复系统字体未正常预下载
+* PC微信因loadSubPackage无回调的容错处理
+* 修复最佳实践检测工具首资源包brotli压缩后仍提示未gzip/br压缩
+* 修复AudioSource修改pitch失效
+* 修复PC端OnKeyDown回调报错
+
 ## 2023-07-20
 ### Feature
 * 补充启动阶段关键日志

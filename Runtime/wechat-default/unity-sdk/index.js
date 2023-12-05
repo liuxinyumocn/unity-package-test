@@ -23,6 +23,10 @@ import uploadFile from './upload-file';
 import gameRecorder from './game-recorder';
 import chat from './chat';
 import font from './font/index';
+import authorize from './authorize';
+import videoDecoder from './video/index';
+import mobileKeyboard from './mobileKeyboard/index';
+import touchMove from './touch/touchMove';
 const unityVersion = '$unityVersion$';
 GameGlobal.unityNamespace = GameGlobal.unityNamespace || {};
 GameGlobal.unityNamespace.unityVersion = unityVersion;
@@ -94,5 +98,9 @@ const WXWASMSDK = {
     ...gameRecorder,
     ...chat,
     ...font,
+    ...authorize,
+    ...videoDecoder,
+    ...mobileKeyboard,
+    ...touchMove,
 };
 GameGlobal.WXWASMSDK = WXWASMSDK;

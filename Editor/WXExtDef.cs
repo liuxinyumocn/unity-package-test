@@ -66,10 +66,30 @@ namespace WeChatWASM
 #else
             WXExtEnvDef.SETDEF("UNITY_2022", false);
 #endif
+#if UNITY_2022_2_OR_NEWER
+            WXExtEnvDef.SETDEF("UNITY_2022_2_OR_NEWER", true);
+#else
+            WXExtEnvDef.SETDEF("UNITY_2022_2_OR_NEWER", false);
+#endif
 #if UNITY_INSTANTGAME
             WXExtEnvDef.SETDEF("UNITY_INSTANTGAME", true);
 #else
             WXExtEnvDef.SETDEF("UNITY_INSTANTGAME", false);
+#endif
+#if WEIXINMINIGAME
+            WXExtEnvDef.SETDEF("WEIXINMINIGAME", true);
+#else
+            WXExtEnvDef.SETDEF("WEIXINMINIGAME", false);
+#endif
+#if TUANJIE_2022_3_OR_NEWER
+            WXExtEnvDef.SETDEF("TUANJIE_2022_3_OR_NEWER", true);
+#else
+            WXExtEnvDef.SETDEF("TUANJIE_2022_3_OR_NEWER", false);
+#endif
+#if PLATFORM_WEIXINMINIGAME
+            WXExtEnvDef.SETDEF("PLATFORM_WEIXINMINIGAME", true);
+#else
+            WXExtEnvDef.SETDEF("PLATFORM_WEIXINMINIGAME", false);
 #endif
             RegisterController();
         }

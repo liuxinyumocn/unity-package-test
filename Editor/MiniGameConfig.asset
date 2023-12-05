@@ -1,5 +1,5 @@
 %YAML 1.1
-%TAG !u! tag:unity3d.com,2011:
+%TAG !u! tag:yousandi.cn,2023:
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: MiniGameConfig
   m_EditorClassIdentifier: 
   ProjectConf:
-    projectName: asda
-    Appid: asd
+    projectName: asd
+    Appid: sdf
     CDN: asd
     assetLoadType: 0
     compressDataPackage: 0
     VideoUrl: 
-    DST: /Users/nebulaliu/Documents/Unity/test220300/wechat
+    DST: /Users/nebulaliu/Documents/Tuanjie/TuanJieTextureTest/minigame
     StreamCDN: 
     bundleHashLength: 32
     bundlePathIdentifier: StreamingAssets;
@@ -49,8 +49,8 @@ MonoBehaviour:
     AutoProfile: 0
     ScriptOnly: 0
     Il2CppOptimizeSize: 1
-    profilingFuncs: 0
-    Webgl2: 1
+    profilingFuncs: 1
+    Webgl2: 0
     fbslim: 1
     DeleteStreamingAssets: 1
     ProfilingMemory: 0
@@ -58,6 +58,7 @@ MonoBehaviour:
     CustomNodePath: 
     showMonitorSuggestModal: 1
     enableProfileStats: 0
+    enableRenderAnalysis: 0
     iOSAutoGCInterval: 10000
   CompressTexture:
     halfSize: 0

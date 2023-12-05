@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using System.IO;
 using static WeChatWASM.WXConvertCore;
+using System;
 
 namespace WeChatWASM
 {
@@ -11,7 +12,7 @@ namespace WeChatWASM
     public class WXEditorWin : EditorWindow
     {
         private static WXEditorScriptObject config;
-
+        private bool fbSlimSupport = true;
         [MenuItem("微信小游戏 / 转换小游戏", false, 1)]
         public static void Open()
         {
@@ -167,10 +168,15 @@ namespace WeChatWASM
                 this.formCheckbox("deleteStreamingAssets", "Clear Streaming Assets");
                 this.formCheckbox("cleanBuild", "Clean WebGL Build");
                 // this.formCheckbox("cleanCloudDev", "Clean Cloud Dev");
-                this.formCheckbox("fbslim", "首包资源优化(?)", "导出时自动清理UnityEditor默认打包但游戏项目从未使用的资源，瘦身首包资源体积，建议所有游戏启用。");
+                this.formCheckbox("fbslim", "首包资源优化(?)", "导出时自动清理UnityEditor默认打包但游戏项目从未使用的资源，瘦身首包资源体积，建议所有游戏启用。" + (this.fbSlimSupport ? "" : "(当前Unity Editor暂不支持该能力)"), !this.fbSlimSupport, (res) =>
+                {
+                    var fbWin = GetWindow(typeof(WXFbSettingWindow), false, "首包资源优化配置面板", true);
+                    fbWin.minSize = new Vector2(680, 350);
+                    fbWin.Show();
+                });
                 this.formCheckbox("showMonitorSuggestModal", "显示优化建议弹窗");
                 this.formCheckbox("enableProfileStats", "显示性能面板");
-
+                this.formCheckbox("enableRenderAnalysis", "显示渲染日志(dev only)");
                 EditorGUILayout.EndVertical();
             }
 
@@ -248,7 +254,7 @@ namespace WeChatWASM
                         ShowNotification(new GUIContent("转换完成"));
                     else
                     {
-#if UNITY_WEBGL && UNITY_INSTANTGAME
+#if (UNITY_WEBGL || WEIXINMINIGAME) && UNITY_INSTANTGAME
                         // 上传首包资源
                         if (!string.IsNullOrEmpty(WXConvertCore.FirstBundlePath) && File.Exists(WXConvertCore.FirstBundlePath))
                         {
@@ -394,7 +400,7 @@ namespace WeChatWASM
             this.setData("disableHighPerformanceFallback", config.ProjectConf.disableHighPerformanceFallback);
             this.setData("showMonitorSuggestModal", config.CompileOptions.showMonitorSuggestModal);
             this.setData("enableProfileStats", config.CompileOptions.enableProfileStats);
-
+            this.setData("enableRenderAnalysis", config.CompileOptions.enableRenderAnalysis);
             this.setData("autoUploadFirstBundle", true);
         }
 
@@ -440,6 +446,7 @@ namespace WeChatWASM
             config.ProjectConf.disableHighPerformanceFallback = this.getDataCheckbox("disableHighPerformanceFallback");
             config.CompileOptions.showMonitorSuggestModal = this.getDataCheckbox("showMonitorSuggestModal");
             config.CompileOptions.enableProfileStats = this.getDataCheckbox("enableProfileStats");
+            config.CompileOptions.enableRenderAnalysis = this.getDataCheckbox("enableRenderAnalysis");
         }
 
         private string getDataInput(string target)
@@ -527,7 +534,7 @@ namespace WeChatWASM
             GUILayout.EndHorizontal();
         }
 
-        private void formCheckbox(string target, string label, string help = null, bool disable = false)
+        private void formCheckbox(string target, string label, string help = null, bool disable = false, Action<bool> setting = null)
         {
             if (!formCheckboxData.ContainsKey(target))
             {
@@ -545,6 +552,18 @@ namespace WeChatWASM
             }
             EditorGUI.BeginDisabledGroup(disable);
             formCheckboxData[target] = EditorGUILayout.Toggle(formCheckboxData[target]);
+
+            if (setting != null)
+            {
+                EditorGUILayout.LabelField("", GUILayout.Width(10));
+                // 配置按钮
+                if (GUILayout.Button(new GUIContent("设置"), GUILayout.Width(40), GUILayout.Height(18)))
+                {
+                    setting?.Invoke(true);
+                }
+                EditorGUILayout.LabelField("", GUILayout.MinWidth(10));
+            }
+
             EditorGUI.EndDisabledGroup();
 
             EditorGUILayout.LabelField(string.Empty);
