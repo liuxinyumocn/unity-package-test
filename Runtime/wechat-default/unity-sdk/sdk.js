@@ -1,10 +1,9 @@
 
 import moduleHelper from './module-helper';
-import { uid, formatResponse, formatJsonStr, formatTouchEvent, onEventCallback, offEventCallback, getListObject } from './utils';
+import { uid, formatResponse, formatJsonStr, onEventCallback, offEventCallback, getListObject } from './utils';
 let OnAccelerometerChangeList;
 let OnAudioInterruptionBeginList;
 let OnAudioInterruptionEndList;
-let OnBLECharacteristicValueChangeList;
 let OnBLEConnectionStateChangeList;
 let OnBLEMTUChangeList;
 let OnBLEPeripheralConnectionStateChangedList;
@@ -16,7 +15,6 @@ let OnCompassChangeList;
 let OnDeviceMotionChangeList;
 let OnDeviceOrientationChangeList;
 let OnErrorList;
-let OnGyroscopeChangeList;
 let OnHideList;
 let OnInteractiveStorageModifiedList;
 let OnKeyDownList;
@@ -33,9 +31,6 @@ let OnNetworkStatusChangeList;
 let OnNetworkWeakChangeList;
 let OnScreenRecordingStateChangedList;
 let OnShowList;
-let OnTouchCancelList;
-let OnTouchEndList;
-let OnTouchStartList;
 let OnUnhandledRejectionList;
 let OnUserCaptureScreenList;
 let OnVoIPChatInterruptedList;
@@ -2736,30 +2731,6 @@ export default {
             },
         });
     },
-    WX_StartGyroscope(conf, callbackId) {
-        const config = formatJsonStr(conf);
-        wx.startGyroscope({
-            ...config,
-            success(res) {
-                formatResponse('GeneralCallbackResult', res);
-                moduleHelper.send('StartGyroscopeCallback', JSON.stringify({
-                    callbackId, type: 'success', res: JSON.stringify(res),
-                }));
-            },
-            fail(res) {
-                formatResponse('GeneralCallbackResult', res);
-                moduleHelper.send('StartGyroscopeCallback', JSON.stringify({
-                    callbackId, type: 'fail', res: JSON.stringify(res),
-                }));
-            },
-            complete(res) {
-                formatResponse('GeneralCallbackResult', res);
-                moduleHelper.send('StartGyroscopeCallback', JSON.stringify({
-                    callbackId, type: 'complete', res: JSON.stringify(res),
-                }));
-            },
-        });
-    },
     WX_StopAccelerometer(conf, callbackId) {
         const config = formatJsonStr(conf);
         wx.stopAccelerometer({
@@ -2899,30 +2870,6 @@ export default {
             complete(res) {
                 formatResponse('GeneralCallbackResult', res);
                 moduleHelper.send('StopFaceDetectCallback', JSON.stringify({
-                    callbackId, type: 'complete', res: JSON.stringify(res),
-                }));
-            },
-        });
-    },
-    WX_StopGyroscope(conf, callbackId) {
-        const config = formatJsonStr(conf);
-        wx.stopGyroscope({
-            ...config,
-            success(res) {
-                formatResponse('GeneralCallbackResult', res);
-                moduleHelper.send('StopGyroscopeCallback', JSON.stringify({
-                    callbackId, type: 'success', res: JSON.stringify(res),
-                }));
-            },
-            fail(res) {
-                formatResponse('GeneralCallbackResult', res);
-                moduleHelper.send('StopGyroscopeCallback', JSON.stringify({
-                    callbackId, type: 'fail', res: JSON.stringify(res),
-                }));
-            },
-            complete(res) {
-                formatResponse('GeneralCallbackResult', res);
-                moduleHelper.send('StopGyroscopeCallback', JSON.stringify({
                     callbackId, type: 'complete', res: JSON.stringify(res),
                 }));
             },
@@ -3312,6 +3259,30 @@ export default {
             },
         });
     },
+    WX_OpenBusinessView(conf, callbackId) {
+        const config = formatJsonStr(conf);
+        wx.openBusinessView({
+            ...config,
+            success(res) {
+                formatResponse('GeneralCallbackResult', res);
+                moduleHelper.send('OpenBusinessViewCallback', JSON.stringify({
+                    callbackId, type: 'success', res: JSON.stringify(res),
+                }));
+            },
+            fail(res) {
+                formatResponse('GeneralCallbackResult', res);
+                moduleHelper.send('OpenBusinessViewCallback', JSON.stringify({
+                    callbackId, type: 'fail', res: JSON.stringify(res),
+                }));
+            },
+            complete(res) {
+                formatResponse('GeneralCallbackResult', res);
+                moduleHelper.send('OpenBusinessViewCallback', JSON.stringify({
+                    callbackId, type: 'complete', res: JSON.stringify(res),
+                }));
+            },
+        });
+    },
     WX_ExitPointerLock() {
         wx.exitPointerLock();
     },
@@ -3403,23 +3374,6 @@ export default {
     WX_OffAudioInterruptionEnd() {
         (OnAudioInterruptionEndList || []).forEach((v) => {
             wx.offAudioInterruptionEnd(v);
-        });
-    },
-    WX_OnBLECharacteristicValueChange() {
-        if (!OnBLECharacteristicValueChangeList) {
-            OnBLECharacteristicValueChangeList = [];
-        }
-        const callback = (res) => {
-            formatResponse('OnBLECharacteristicValueChangeListenerResult', res);
-            const resStr = JSON.stringify(res);
-            moduleHelper.send('_OnBLECharacteristicValueChangeCallback', resStr);
-        };
-        OnBLECharacteristicValueChangeList.push(callback);
-        wx.onBLECharacteristicValueChange(callback);
-    },
-    WX_OffBLECharacteristicValueChange() {
-        (OnBLECharacteristicValueChangeList || []).forEach((v) => {
-            wx.offBLECharacteristicValueChange(v);
         });
     },
     WX_OnBLEConnectionStateChange() {
@@ -3615,23 +3569,6 @@ export default {
     WX_OffError() {
         (OnErrorList || []).forEach((v) => {
             wx.offError(v);
-        });
-    },
-    WX_OnGyroscopeChange() {
-        if (!OnGyroscopeChangeList) {
-            OnGyroscopeChangeList = [];
-        }
-        const callback = (res) => {
-            formatResponse('OnGyroscopeChangeListenerResult', res);
-            const resStr = JSON.stringify(res);
-            moduleHelper.send('_OnGyroscopeChangeCallback', resStr);
-        };
-        OnGyroscopeChangeList.push(callback);
-        wx.onGyroscopeChange(callback);
-    },
-    WX_OffGyroscopeChange() {
-        (OnGyroscopeChangeList || []).forEach((v) => {
-            wx.offGyroscopeChange(v);
         });
     },
     WX_OnHide() {
@@ -3918,69 +3855,6 @@ export default {
     WX_OffShow() {
         (OnShowList || []).forEach((v) => {
             wx.offShow(v);
-        });
-    },
-    WX_OnTouchCancel() {
-        if (!OnTouchCancelList) {
-            OnTouchCancelList = [];
-        }
-        const callback = (res) => {
-            const touches = res.touches.map((v) => formatTouchEvent(v));
-            const resStr = JSON.stringify({
-                touches,
-                timeStamp: parseInt(res.timeStamp, 10),
-                changedTouches: res.changedTouches.map((v) => formatTouchEvent(v)),
-            });
-            moduleHelper.send('_OnTouchCancelCallback', resStr);
-        };
-        OnTouchCancelList.push(callback);
-        wx.onTouchCancel(callback);
-    },
-    WX_OffTouchCancel() {
-        (OnTouchCancelList || []).forEach((v) => {
-            wx.offTouchCancel(v);
-        });
-    },
-    WX_OnTouchEnd() {
-        if (!OnTouchEndList) {
-            OnTouchEndList = [];
-        }
-        const callback = (res) => {
-            const touches = res.touches.map((v) => formatTouchEvent(v));
-            const resStr = JSON.stringify({
-                touches,
-                timeStamp: parseInt(res.timeStamp, 10),
-                changedTouches: res.changedTouches.map((v) => formatTouchEvent(v)),
-            });
-            moduleHelper.send('_OnTouchEndCallback', resStr);
-        };
-        OnTouchEndList.push(callback);
-        wx.onTouchEnd(callback);
-    },
-    WX_OffTouchEnd() {
-        (OnTouchEndList || []).forEach((v) => {
-            wx.offTouchEnd(v);
-        });
-    },
-    WX_OnTouchStart() {
-        if (!OnTouchStartList) {
-            OnTouchStartList = [];
-        }
-        const callback = (res) => {
-            const touches = res.touches.map((v) => formatTouchEvent(v));
-            const resStr = JSON.stringify({
-                touches,
-                timeStamp: parseInt(res.timeStamp, 10),
-                changedTouches: res.changedTouches.map((v) => formatTouchEvent(v)),
-            });
-            moduleHelper.send('_OnTouchStartCallback', resStr);
-        };
-        OnTouchStartList.push(callback);
-        wx.onTouchStart(callback);
-    },
-    WX_OffTouchStart() {
-        (OnTouchStartList || []).forEach((v) => {
-            wx.offTouchStart(v);
         });
     },
     WX_OnUnhandledRejection() {

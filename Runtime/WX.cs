@@ -2194,16 +2194,6 @@ namespace WeChatWASM
         }
 
         /// <summary>
-        /// [wx.startGyroscope(Object object)](https://developers.weixin.qq.com/minigame/dev/api/device/gyroscope/wx.startGyroscope.html)
-        /// 需要基础库： `2.3.0`
-        /// 开始监听陀螺仪数据。
-        /// </summary>
-        public static void StartGyroscope(StartGyroscopeOption callback)
-        {
-            WXSDKManagerHandler.Instance.StartGyroscope(callback);
-        }
-
-        /// <summary>
         /// [wx.stopAccelerometer(Object object)](https://developers.weixin.qq.com/minigame/dev/api/device/accelerometer/wx.stopAccelerometer.html)
         /// 需要基础库： `1.1.0`
         /// 停止监听加速度数据。
@@ -2277,16 +2267,6 @@ namespace WeChatWASM
         public static void StopFaceDetect(StopFaceDetectOption callback)
         {
             WXSDKManagerHandler.Instance.StopFaceDetect(callback);
-        }
-
-        /// <summary>
-        /// [wx.stopGyroscope(Object object)](https://developers.weixin.qq.com/minigame/dev/api/device/gyroscope/wx.stopGyroscope.html)
-        /// 需要基础库： `2.3.0`
-        /// 停止监听陀螺仪数据。
-        /// </summary>
-        public static void StopGyroscope(StopGyroscopeOption callback)
-        {
-            WXSDKManagerHandler.Instance.StopGyroscope(callback);
         }
 
         /// <summary>
@@ -2496,6 +2476,15 @@ namespace WeChatWASM
         public static void RequestSubscribeLiveActivity(RequestSubscribeLiveActivityOption callback)
         {
             WXSDKManagerHandler.Instance.RequestSubscribeLiveActivity(callback);
+        }
+
+        /// <summary>
+        /// 打开业务页面
+        /// 从基础库 v3.1.0 开始支持
+        /// </summary>
+        public static void OpenBusinessView(OpenBusinessViewOption callback)
+        {
+            WXSDKManagerHandler.Instance.OpenBusinessView(callback);
         }
 
         /// <summary>
@@ -2723,39 +2712,6 @@ namespace WeChatWASM
         public static void OffAudioInterruptionEnd(Action<GeneralCallbackResult> res)
         {
             WXSDKManagerHandler.Instance.OffAudioInterruptionEnd(res);
-        }
-
-        /// <summary>
-        /// [wx.onBLECharacteristicValueChange(function listener)](https://developers.weixin.qq.com/minigame/dev/api/device/bluetooth-ble/wx.onBLECharacteristicValueChange.html)
-        /// 需要基础库： `2.9.2`
-        /// 监听蓝牙低功耗设备的特征值变化事件。必须先调用 [wx.notifyBLECharacteristicValueChange](https://developers.weixin.qq.com/minigame/dev/api/device/bluetooth-ble/wx.notifyBLECharacteristicValueChange.html) 接口才能接收到设备推送的 notification。
-        /// **示例代码**
-        /// [在微信开发者工具中查看示例](https://developers.weixin.qq.com/s/pQU51zmz7a3K)
-        /// ```js
-        /// // ArrayBuffer转16进制字符串示例
-        /// function ab2hex(buffer) {
-        /// let hexArr = Array.prototype.map.call(
-        /// new Uint8Array(buffer),
-        /// function(bit) {
-        /// return ('00' + bit.toString(16)).slice(-2)
-        /// }
-        /// )
-        /// return hexArr.join('');
-        /// }
-        /// wx.onBLECharacteristicValueChange(function(res) {
-        /// console.log(`characteristic ${res.characteristicId} has changed, now is ${res.value}`)
-        /// console.log(ab2hex(res.value))
-        /// })
-        /// ```
-        /// </summary>
-        public static void OnBLECharacteristicValueChange(Action<OnBLECharacteristicValueChangeListenerResult> result)
-        {
-            WXSDKManagerHandler.Instance.OnBLECharacteristicValueChange(result);
-        }
-
-        public static void OffBLECharacteristicValueChange(Action<OnBLECharacteristicValueChangeListenerResult> result)
-        {
-            WXSDKManagerHandler.Instance.OffBLECharacteristicValueChange(result);
         }
 
         /// <summary>
@@ -3005,21 +2961,6 @@ namespace WeChatWASM
         public static void OffError(Action<Error> error)
         {
             WXSDKManagerHandler.Instance.OffError(error);
-        }
-
-        /// <summary>
-        /// [wx.onGyroscopeChange(function listener)](https://developers.weixin.qq.com/minigame/dev/api/device/gyroscope/wx.onGyroscopeChange.html)
-        /// 需要基础库： `2.3.0`
-        /// 监听陀螺仪数据变化事件。频率根据 [wx.startGyroscope()](https://developers.weixin.qq.com/minigame/dev/api/device/gyroscope/wx.startGyroscope.html) 的 interval 参数。可以使用 [wx.stopGyroscope()](https://developers.weixin.qq.com/minigame/dev/api/device/gyroscope/wx.stopGyroscope.html) 停止监听。
-        /// </summary>
-        public static void OnGyroscopeChange(Action<OnGyroscopeChangeListenerResult> result)
-        {
-            WXSDKManagerHandler.Instance.OnGyroscopeChange(result);
-        }
-
-        public static void OffGyroscopeChange(Action<OnGyroscopeChangeListenerResult> result)
-        {
-            WXSDKManagerHandler.Instance.OffGyroscopeChange(result);
         }
 
         /// <summary>
@@ -3302,54 +3243,6 @@ namespace WeChatWASM
         public static void OffShow(Action<OnShowListenerResult> result)
         {
             WXSDKManagerHandler.Instance.OffShow(result);
-        }
-
-        /// <summary>
-        /// [wx.onTouchCancel(function listener)](https://developers.weixin.qq.com/minigame/dev/api/device/touch-event/wx.onTouchCancel.html)
-        /// 监听触点失效事件
-        /// **注意**
-        /// - 在 Windows/Mac 设备上，将会由鼠标事件转义而成。
-        /// </summary>
-        public static void OnTouchCancel(Action<OnTouchStartListenerResult> result)
-        {
-            WXSDKManagerHandler.Instance.OnTouchCancel(result);
-        }
-
-        public static void OffTouchCancel(Action<OnTouchStartListenerResult> result)
-        {
-            WXSDKManagerHandler.Instance.OffTouchCancel(result);
-        }
-
-        /// <summary>
-        /// [wx.onTouchEnd(function listener)](https://developers.weixin.qq.com/minigame/dev/api/device/touch-event/wx.onTouchEnd.html)
-        /// 监听触摸结束事件
-        /// **注意**
-        /// - 在 Windows/Mac 设备上，将会由鼠标事件转义而成。
-        /// </summary>
-        public static void OnTouchEnd(Action<OnTouchStartListenerResult> result)
-        {
-            WXSDKManagerHandler.Instance.OnTouchEnd(result);
-        }
-
-        public static void OffTouchEnd(Action<OnTouchStartListenerResult> result)
-        {
-            WXSDKManagerHandler.Instance.OffTouchEnd(result);
-        }
-
-        /// <summary>
-        /// [wx.onTouchStart(function listener)](https://developers.weixin.qq.com/minigame/dev/api/device/touch-event/wx.onTouchStart.html)
-        /// 监听开始触摸事件
-        /// **注意**
-        /// - 在 Windows/Mac 设备上，将会由鼠标事件转义而成。
-        /// </summary>
-        public static void OnTouchStart(Action<OnTouchStartListenerResult> result)
-        {
-            WXSDKManagerHandler.Instance.OnTouchStart(result);
-        }
-
-        public static void OffTouchStart(Action<OnTouchStartListenerResult> result)
-        {
-            WXSDKManagerHandler.Instance.OffTouchStart(result);
         }
 
         /// <summary>

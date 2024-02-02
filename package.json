@@ -1,10 +1,10 @@
 {
-  "name": "com.qq.wx.minigame",
+  "name": "com.qq.weixin.game",
   "displayName": "WXSDK",
   "description": "Project.",
   "version": "0.1.0",
   "unity": "2022.3",
-  "unityRelease": "2t2",
+  "unityRelease": "2t4",
   "keywords": [
     "Tuanjie",
     "WX"

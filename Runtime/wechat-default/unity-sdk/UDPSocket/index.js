@@ -1,4 +1,4 @@
-import { formatJsonStr, uid, onEventCallback, offEventCallback, getListObject, serializeLocalInfo, serializeRemoteInfo, formatResponse } from '../utils';
+import { formatJsonStr, uid, onEventCallback, offEventCallback, getListObject, convertDataToPointer, convertInfoToPointer, formatResponse } from '../utils';
 const UDPSocketList = {};
 const wxUDPSocketCloseList = {};
 const wxUDPSocketErrorList = {};
@@ -18,6 +18,7 @@ function WX_UDPSocketClose(id) {
         return;
     }
     obj.close();
+    delete UDPSocketList[id];
 }
 function WX_UDPSocketConnect(id, option) {
     const obj = getUDPSocketObject(id);
@@ -95,38 +96,21 @@ function WX_UDPSocketOnMessage(id, needInfo) {
         wxUDPSocketMessageList[id] = [];
     }
     const callback = (res) => {
+        formatResponse('UDPSocketOnMessageListenerResult', res);
+        const idPtr = convertDataToPointer(id);
+        const messagePtr = convertDataToPointer(res.message);
         if (needInfo) {
-            formatResponse('UDPSocketOnMessageListenerResult', res);
-            const idBytes = GameGlobal.Module.lengthBytesUTF8(id) + 1; 
-            const idPtr = GameGlobal.Module._malloc(idBytes); 
-            GameGlobal.Module.stringToUTF8(id, idPtr, idBytes);
-            const messageByteArray = new Uint8Array(res.message);
-            const localInfoByteArray = serializeLocalInfo(res.localInfo);
-            const remoteInfoByteArray = serializeRemoteInfo(res.remoteInfo);
-            const messageBuffer = GameGlobal.Module._malloc(messageByteArray.length);
-            const localInfoBuffer = GameGlobal.Module._malloc(localInfoByteArray.length);
-            const remoteInfoBuffer = GameGlobal.Module._malloc(remoteInfoByteArray.length);
-            GameGlobal.Module.HEAPU8.set(messageByteArray, messageBuffer);
-            GameGlobal.Module.HEAPU8.set(localInfoByteArray, localInfoBuffer);
-            GameGlobal.Module.HEAPU8.set(remoteInfoByteArray, remoteInfoBuffer);
-            GameGlobal.Module.dynCall('viiiii', wxUDPSocketOnMessageCallback, [idPtr, messageBuffer, messageByteArray.length, localInfoBuffer, remoteInfoBuffer]);
-            GameGlobal.Module._free(idPtr);
-            GameGlobal.Module._free(messageBuffer);
-            GameGlobal.Module._free(localInfoBuffer);
-            GameGlobal.Module._free(remoteInfoBuffer);
+            const localInfoPtr = convertInfoToPointer(res.localInfo);
+            const remoteInfoPtr = convertInfoToPointer(res.remoteInfo);
+            GameGlobal.Module.dynCall_viiiii(wxUDPSocketOnMessageCallback, idPtr, messagePtr, res.message.byteLength, localInfoPtr, remoteInfoPtr);
+            GameGlobal.Module._free(localInfoPtr);
+            GameGlobal.Module._free(remoteInfoPtr);
         }
         else {
-            formatResponse('UDPSocketOnMessageListenerResult', res);
-            const idBytes = GameGlobal.Module.lengthBytesUTF8(id) + 1; 
-            const idPtr = GameGlobal.Module._malloc(idBytes); 
-            GameGlobal.Module.stringToUTF8(id, idPtr, idBytes);
-            const messageByteArray = new Uint8Array(res.message);
-            const messageBuffer = GameGlobal.Module._malloc(messageByteArray.length);
-            GameGlobal.Module.HEAPU8.set(messageByteArray, messageBuffer);
-            GameGlobal.Module.dynCall('viiiii', wxUDPSocketOnMessageCallback, [idPtr, messageBuffer, messageByteArray.length, 0, 0]);
-            GameGlobal.Module._free(idPtr);
-            GameGlobal.Module._free(messageBuffer);
+            GameGlobal.Module.dynCall_viiiii(wxUDPSocketOnMessageCallback, idPtr, messagePtr, res.message.byteLength, 0, 0);
         }
+        GameGlobal.Module._free(idPtr);
+        GameGlobal.Module._free(messagePtr);
     };
     wxUDPSocketMessageList[id].push(callback);
     obj.onMessage(callback);
@@ -141,8 +125,6 @@ function WX_UDPSocketSendString(id, data, param) {
         address: config.address,
         message: data,
         port: config.port,
-        length: config.length,
-        offset: config.offset,
         setBroadcast: config.setBroadcast,
     });
 }
@@ -154,7 +136,7 @@ function WX_UDPSocketSendBuffer(id, dataPtr, dataLength, param) {
     const config = formatJsonStr(param);
     obj.send({
         address: config.address,
-        message: GameGlobal.Module.HEAPU8.subarray(dataPtr, dataPtr + dataLength),
+        message: GameGlobal.Module.HEAPU8.buffer.slice(dataPtr, dataPtr + dataLength),
         port: config.port,
         length: config.length,
         offset: config.offset,
