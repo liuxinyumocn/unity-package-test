@@ -26,16 +26,18 @@ namespace WeChatWASM
             config = UnityUtil.GetEditorConf();
             // SDKFilePath = Path.Combine(Application.dataPath, "WX-WASM-SDK-V2", "Runtime", "wechat-default", "unity-sdk", "index.js");
             SDKFilePath = Path.Combine(UnityUtil.GetWxSDKRootPath(), "Runtime", "wechat-default", "unity-sdk", "index.js");
+            // string templateHeader = (UnityUtil.GetSDKMode() == UnityUtil.SDKMode.Package && UnityUtil.GetEngineVersion() >= UnityUtil.EngineVersion.Tuanjie) ? "PACKAGE:com.qq.wx.minigame:" : "PROJECT:";
+            string templateHeader = "PROJECT:";
 #if WEIXINMINIGAME
             PlayerSettings.WeixinMiniGame.threadsSupport = false;
             PlayerSettings.runInBackground = false;
             PlayerSettings.WeixinMiniGame.compressionFormat = WeixinMiniGameCompressionFormat.Disabled;
 #if UNITY_2022_3_OR_NEWER
-            PlayerSettings.WeixinMiniGame.template = "PROJECT:WXTemplate2022TJ";
+            PlayerSettings.WeixinMiniGame.template = $"{templateHeader}WXTemplate2022TJ";
 #elif UNITY_2020_1_OR_NEWER
-            PlayerSettings.WeixinMiniGame.template = "PROJECT:WXTemplate2020";
+            PlayerSettings.WeixinMiniGame.template = $"{templateHeader}WXTemplate2020";
 #else
-            PlayerSettings.WeixinMiniGame.template = "PROJECT:WXTemplate";
+            PlayerSettings.WeixinMiniGame.template = $"{templateHeader}WXTemplate";
 #endif
             PlayerSettings.WeixinMiniGame.linkerTarget = WeixinMiniGameLinkerTarget.Wasm;
             PlayerSettings.WeixinMiniGame.dataCaching = false;
@@ -49,11 +51,11 @@ namespace WeChatWASM
             PlayerSettings.runInBackground = false;
             PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Disabled;
 #if UNITY_2022_3_OR_NEWER
-        PlayerSettings.WebGL.template = "PROJECT:WXTemplate2022";
+        PlayerSettings.WebGL.template = $"{templateHeader}WXTemplate2022";
 #elif UNITY_2020_1_OR_NEWER
-            PlayerSettings.WebGL.template = "PROJECT:WXTemplate2020";
+            PlayerSettings.WebGL.template = $"{templateHeader}WXTemplate2020";
 #else
-            PlayerSettings.WebGL.template = "PROJECT:WXTemplate";
+            PlayerSettings.WebGL.template = $"{templateHeader}WXTemplate";
 #endif
             PlayerSettings.WebGL.linkerTarget = WebGLLinkerTarget.Wasm;
             PlayerSettings.WebGL.dataCaching = false;
@@ -1144,25 +1146,30 @@ namespace WeChatWASM
         /// </summary>
         private static void SettingWXTextureMinJSLib()
         {
+            string[] jsLibs;
             string DS = WXAssetsTextTools.DS;
-            string wxSdkRoot = UnityUtil.GetWxSDKRootPath();
-            string jsLibRootDir = $"Assets{DS}WX-WASM-SDK-V2{DS}Runtime{DS}Plugins{DS}";
-
-            // 下方顺序不可变动
-            // string[] jsLibs = new string[]
-            // {
-            //     $"{jsLibRootDir}SDK-WX-TextureMin-JS-WEBGL1.jslib",
-            //     $"{jsLibRootDir}SDK-WX-TextureMin-JS-WEBGL2.jslib",
-            //     $"{jsLibRootDir}SDK-WX-TextureMin-JS-WEBGL2-Linear.jslib",
-            // };
-            string[] jsLibs = new string[]
+            if (UnityUtil.GetSDKMode() == UnityUtil.SDKMode.Package)
             {
-                $"Packages{DS}com.qq.weixin.game{DS}Runtime{DS}Plugins{DS}SDK-WX-TextureMin-JS-WEBGL1.jslib",
-                $"Packages{DS}com.qq.weixin.game{DS}Runtime{DS}Plugins{DS}SDK-WX-TextureMin-JS-WEBGL2.jslib",
-                $"Packages{DS}com.qq.weixin.game{DS}Runtime{DS}Plugins{DS}SDK-WX-TextureMin-JS-WEBGL2-Linear.jslib",
-            };
-            int index = 0;
+                jsLibs = new string[]
+                {
+                $"Packages{DS}com.qq.weixin.minigame{DS}Runtime{DS}Plugins{DS}SDK-WX-TextureMin-JS-WEBGL1.jslib",
+                $"Packages{DS}com.qq.weixin.minigame{DS}Runtime{DS}Plugins{DS}SDK-WX-TextureMin-JS-WEBGL2.jslib",
+                $"Packages{DS}com.qq.weixin.minigame{DS}Runtime{DS}Plugins{DS}SDK-WX-TextureMin-JS-WEBGL2-Linear.jslib",
+                };
+            }
+            else
+            {
+                string jsLibRootDir = $"Assets{DS}WX-WASM-SDK-V2{DS}Runtime{DS}Plugins{DS}";
 
+                // 下方顺序不可变动
+                 jsLibs = new string[]
+                 {
+                     $"{jsLibRootDir}SDK-WX-TextureMin-JS-WEBGL1.jslib",
+                     $"{jsLibRootDir}SDK-WX-TextureMin-JS-WEBGL2.jslib",
+                     $"{jsLibRootDir}SDK-WX-TextureMin-JS-WEBGL2-Linear.jslib",
+                 };
+            }       
+            int index = 0;
             if (config.CompileOptions.Webgl2)
             {
                 if (PlayerSettings.colorSpace == ColorSpace.Linear)
