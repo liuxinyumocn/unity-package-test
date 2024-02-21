@@ -166,9 +166,9 @@
         <member name="M:WeChatWASM.UnityUtil.GetEngineVersion">
             <summary>
             获取当前环境引擎版本类型
-              0 是公版 Unity
-              1 是团结版老版本
-              2 是团结版新版本（支持Package导入版本）
+              Unity 是公版 Unity
+              TuanjieBeta 是团结版老版本
+              Tuanjie 是团结版新版本（支持Package WebGLTemplate）
             </summary>
             <returns></returns>
         </member>
@@ -180,6 +180,12 @@
                                    若是Package模式，则返回插件的真实路径，如 ..../temp/xxxxx/com.qq.wx.minigame
             </summary>
             <returns></returns>
+        </member>
+        <member name="M:WeChatWASM.UnityUtil.GetSDKMode">
+            <summary>
+            获取当前 WXSDK 引入的方式
+            </summary>
+            <returns> SDKMode.Assets 资源目录模式； SDKMode.Package 包模式</returns>
         </member>
         <member name="M:WeChatWASM.UnityUtil.ScanDirFiles(System.String)">
             <summary>
