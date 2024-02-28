@@ -4105,7 +4105,7 @@ export default {
     },
     WX_GetAppAuthorizeSetting() {
         const res = wx.getAppAuthorizeSetting();
-        formatResponse('AppAuthorizeSetting', res);
+        formatResponse('AppAuthorizeSetting', JSON.parse(JSON.stringify(res)));
         return JSON.stringify(res);
     },
     WX_GetAppBaseInfo() {
@@ -4160,7 +4160,7 @@ export default {
     },
     WX_GetSystemSetting() {
         const res = wx.getSystemSetting();
-        formatResponse('SystemSetting', res);
+        formatResponse('SystemSetting', JSON.parse(JSON.stringify(res)));
         return JSON.stringify(res);
     },
     WX_GetWindowInfo() {

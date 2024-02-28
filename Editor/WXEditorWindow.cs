@@ -24,13 +24,6 @@ namespace WeChatWASM
             PluginUpdateManager.CheckUpdte();
         }
 
-        [MenuItem("微信小游戏 / 读取目录", false, 1)]
-        public static void test() {
-            Debug.Log(UnityUtil.GetWxSDKRootPath());
-            UnityUtil.WxSDKEnvInit();
-            Debug.Log(UnityUtil.GetEngineVersion());
-        }
-
         // 向前兼容，请使用 WXConvertCore.cs
         public static WXExportError DoExport(bool buildWebGL = true)
         {
